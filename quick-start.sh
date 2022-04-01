@@ -1,6 +1,6 @@
 #!/bin/bash
 # to download and run this script in one command, execute the following:
-# source <( curl https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/quick-start.sh)
+# source <( curl https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/quick-start.sh)
 
 lowercase(){
     echo "$1" | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/"
@@ -56,6 +56,7 @@ else
       echo "  [ ] Install Docker - Version 20.10.1+"
       echo "  [ ] Install docker Python module - version 4.4.0+"
       echo "  [ ] Install docker-compose Python module - version 1.27.4+"
+      echo "  [ ] Install docker-compose"
       echo "  [ ] Install/Upgrade Ansible community.general collection"
       echo "  [ ] Install/Upgrade GNU Make"
       echo "  [ ] Install/Upgrade Git - version 2.25.1+"
@@ -115,33 +116,33 @@ mkdir /etc/corelight-env/.awx/awxcompose/redis_socket
 sudo chmod 755 -R /etc/corelight-env/
 sudo chmod 777 /etc/corelight-env/.awx/awxcompose/redis_socket
 cd /etc/corelight-env/.awx/awxcompose
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/environment.sh
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/environment.sh
 sudo chmod 600 environment.sh
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/credentials.py
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/credentials.py
 sudo chmod 600 credentials.py
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/docker-compose.yml
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/docker-compose.yml
 sudo chmod 600 docker-compose.yml
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/awx.Dockerfile
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/awx.Dockerfile
 sudo chmod 600 awx.Dockerfile
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/centos8-suricata.Dockerfile
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/centos8-suricata.Dockerfile
 sudo chmod 600 centos8-suricata.Dockerfile
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/nginx.conf
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/nginx.conf
 sudo chmod 600 nginx.conf
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/redis.conf
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/redis.conf
 sudo chmod 664 redis.conf
-curl -O https://raw.githubusercontent.com/corelight/ansible-awx-docker-bundle/devel/installer_files/SECRET_KEY
+curl -O https://raw.githubusercontent.com/nlahmi/ansible-awx-docker-bundle/devel/installer_files/SECRET_KEY
 sudo chmod 600 SECRET_KEY
 
 BROADCAST_WEBSOCKET_SECRET=$(base64 /dev/urandom | tr -d '/+' | dd bs=128 count=1 2>/dev/null)
 echo BROADCAST_WEBSOCKET_SECRET = \"$BROADCAST_WEBSOCKET_SECRET\" >> credentials.py
 
-echo "Installing Docker"
+echo "Installing Docker and Docker-Compose"
 if [ "$DistroBasedOn" = "redhat" ]; then
         sudo yum install -y yum-utils
         sudo yum-config-manager \
           --add-repo \
           https://download.docker.com/linux/centos/docker-ce.repo
-        sudo yum install -y docker-ce docker-ce-cli containerd.io
+        sudo yum install -y docker-ce docker-ce-cli containerd.io docker-compose
         sudo systemctl start docker
 elif [ "$DistroBasedOn" = "debian" ]; then
         sudo apt-get update -y -q
@@ -157,7 +158,7 @@ elif [ "$DistroBasedOn" = "debian" ]; then
           $(lsb_release -cs) \
           stable"
         sudo apt-get update
-        sudo apt-get install -y docker-ce docker-ce-cli containerd.io
+        sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-compose
 else
         echo "Not RedHat or Debian based"
         exit 1

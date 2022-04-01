@@ -1,4 +1,4 @@
-FROM ansible/awx:16.0.0
+FROM ansible/awx:17.1.0
 USER root
 
 #RUN python3 -m pip uninstall -y ansible
